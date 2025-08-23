@@ -224,7 +224,7 @@ html.dark .lang-switch button.active {
     color: var(--secondary-text); 
 }
 .exp-bullets li{ 
-    display:flex; 
+    display: flex; 
     gap:.6rem; 
     line-height:1.55; 
 }
@@ -259,7 +259,7 @@ html.dark .lang-switch button.active {
         opacity:.65; 
     }
     .experience-dot{ 
-        left:-.2rem; 
+        left: -19px; 
     }
 }
 
@@ -543,6 +543,9 @@ html.dark .lang-switch button.active {
 /* Small-screen rail polish still applies; dot stays centered via calc */
 @media (max-width: 479px){
     .timeline-line{ left:.5rem; }
+    .timeline-item .timeline-icon{
+        left: 2px;
+    }
 }
 
 /* ≥ md: alternate left/right and center the rail */
@@ -1004,4 +1007,5 @@ html.dark .lang-switch button.active {
     .proj-date::after{ right:-.38rem; width:.38rem; }
     .proj-date::before{ right:-.38rem; }
 }
+
 
