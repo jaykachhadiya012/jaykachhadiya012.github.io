@@ -251,7 +251,7 @@ html.dark .lang-switch button.active {
 /* mobile polish: lighter rail effect */
 @media (max-width: 479px){
     .experience-list{ 
-        --list-pad-left: 1.25rem;
+        --list-pad-left: 3.5rem;
         --rail-x: .5rem; 
     }
     .experience-list::before{ 
@@ -259,7 +259,7 @@ html.dark .lang-switch button.active {
         opacity:.65; 
     }
     .experience-dot{ 
-        left: -19px; 
+        left: -54.5px; 
     }
 }
 
@@ -1007,5 +1007,6 @@ html.dark .lang-switch button.active {
     .proj-date::after{ right:-.38rem; width:.38rem; }
     .proj-date::before{ right:-.38rem; }
 }
+
 
 
