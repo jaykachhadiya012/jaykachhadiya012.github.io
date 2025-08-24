@@ -446,61 +446,93 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // --- CERTIFICATE SLIDER ---
+    (() => {
     const slider = document.querySelector('.slider-container');
-    if (slider) {
-        const track = slider.querySelector('.slider-track');
-        const originalSlides = Array.from(track.children).slice(0, track.children.length / 2);
-        
-        if (originalSlides.length > 0) {
-            const slideWidth = originalSlides[0].offsetWidth; 
-            const trackWidth = originalSlides.length * slideWidth;
-            
-            let position = 0;
-            let isPausedOnHover = false;
-            let isDragging = false;
-            let startX = 0;
-            let startPosition = 0;
+    if (!slider) return;
+    const track = slider.querySelector('.slider-track');
 
-            const animationLoop = () => {
-                if (!isPausedOnHover && !isDragging) {
-                    position += 0.5; // Adjust for speed
-                    if (position >= trackWidth) {
-                        position -= trackWidth;
-                    }
-                }
-                
-                track.style.transform = `translateX(-${position}px)`;
-                
-                requestAnimationFrame(animationLoop);
-            };
-
-            slider.addEventListener('mouseenter', () => { isPausedOnHover = true; });
-            slider.addEventListener('mouseleave', () => { 
-                isPausedOnHover = false;
-                isDragging = false;
-            });
-            
-            slider.addEventListener('mousedown', (e) => {
-                isDragging = true;
-                startX = e.pageX;
-                startPosition = position;
-            });
-
-            window.addEventListener('mouseup', () => {
-                isDragging = false;
-            });
-
-            window.addEventListener('mousemove', (e) => {
-                if (!isDragging) return;
-                e.preventDefault();
-                const walk = e.pageX - startX;
-                const newPos = startPosition - walk;
-                position = (newPos % trackWidth + trackWidth) % trackWidth;
-            });
-            
-            animationLoop();
-        }
+    // one-time clone for seamless loop
+    if (!track.dataset.cloned) {
+        const originals = Array.from(track.children);
+        originals.forEach(n => track.appendChild(n.cloneNode(true)));
+        track.dataset.cloned = '1';
     }
+
+    let setWidth = track.scrollWidth / 2;
+    let pos = 0;
+    let dragging = false;
+    let hoverPause = false;
+    let startX = 0, startPos = 0, moved = 0;
+    let raf;
+
+    const recalc = () => { setWidth = track.scrollWidth / 2; };
+    window.addEventListener('resize', recalc, { passive: true });
+
+    // autoplay
+    const speed = 0.5;
+    function loop(){
+        if (!dragging && !hoverPause) {
+            pos += speed;
+            if (pos >= setWidth) pos -= setWidth;
+            track.style.transform = `translateX(${-pos}px)`;
+        }
+        raf = requestAnimationFrame(loop);
+    }
+    raf = requestAnimationFrame(loop);
+
+    // pointer drag (desktop + touch)
+    slider.style.touchAction = 'pan-y';
+    slider.addEventListener('pointerdown', (e) => {
+        dragging = true;
+        moved = 0;
+        startX = e.clientX;
+        startPos = pos;
+        slider.classList.add('is-dragging');      // <<< update cursor
+        slider.setPointerCapture(e.pointerId);
+    });
+
+    slider.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        const dx = e.clientX - startX;
+        moved = Math.max(moved, Math.abs(dx));
+        pos = (startPos - dx) % setWidth;
+        if (pos < 0) pos += setWidth;
+        track.style.transform = `translateX(${-pos}px)`;
+    });
+
+    const endDrag = (e) => {
+        if (!dragging) return;
+        dragging = false;
+        slider.classList.remove('is-dragging');   // <<< restore cursor
+        try { slider.releasePointerCapture(e.pointerId); } catch {}
+    };
+    slider.addEventListener('pointerup', endDrag);
+    slider.addEventListener('pointercancel', endDrag);
+    slider.addEventListener('mouseleave', endDrag);
+
+    // pause autoplay on hover (desktop)
+    slider.addEventListener('mouseenter', () => { hoverPause = true; });
+    slider.addEventListener('mouseleave', () => { hoverPause = false; });
+
+    // wheel -> horizontal scroll (desktop mice/trackpads)
+    slider.addEventListener('wheel', (e) => {
+        // Convert vertical wheel to horizontal slide when hovering the slider
+        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
+        e.preventDefault(); // only when we’re actively using it for horizontal scroll
+            pos = (pos + e.deltaY) % setWidth;      // natural feel: wheel down -> move right
+        } else {
+            pos = (pos + e.deltaX) % setWidth;
+        }
+        if (pos < 0) pos += setWidth;
+        track.style.transform = `translateX(${-pos}px)`;
+    }, { passive: false });
+
+    // click guard (don’t open links if it was a drag)
+    track.addEventListener('click', (e) => {
+        if (moved > 6) { e.preventDefault(); e.stopPropagation(); }
+        moved = 0;
+    }, true);
+    })();
     document.querySelectorAll('.slide-title').forEach(el => {
         if (!el.hasAttribute('title')) el.setAttribute('title', el.textContent.trim());
     });
