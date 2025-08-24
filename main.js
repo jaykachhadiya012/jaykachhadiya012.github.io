@@ -451,88 +451,109 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!slider) return;
     const track = slider.querySelector('.slider-track');
 
-    // one-time clone for seamless loop
+    // One-time clone for seamless loop
     if (!track.dataset.cloned) {
         const originals = Array.from(track.children);
         originals.forEach(n => track.appendChild(n.cloneNode(true)));
         track.dataset.cloned = '1';
     }
 
-    let setWidth = track.scrollWidth / 2;
-    let pos = 0;
+    let halfWidth = track.scrollWidth / 2; // width of the original set
+    let pos = 0;         // virtual x position
+    let dir = 1;         // +1 = left, -1 = right (autoplay direction)
+    let speed = 0.5;     // autoplay base speed (px per frame)
     let dragging = false;
     let hoverPause = false;
     let startX = 0, startPos = 0, moved = 0;
     let raf;
 
-    const recalc = () => { setWidth = track.scrollWidth / 2; };
-    window.addEventListener('resize', recalc, { passive: true });
+    // Keep measurements fresh (images / resize)
+    const normalize = () => {
+        if (halfWidth <= 0) return;
+        if (pos >= halfWidth) pos -= halfWidth;
+        if (pos < 0) pos += halfWidth;
+    };
+    const recalc = () => {
+        halfWidth = track.scrollWidth / 2;
+        normalize();
+        track.style.transform = `translateX(${-pos}px)`;
+    };
+    new ResizeObserver(recalc).observe(track);
+    window.addEventListener('load', recalc, { once: true });
 
-    // autoplay
-    const speed = 0.5;
-    function loop(){
+    // Autoplay loop
+    function tick(){
         if (!dragging && !hoverPause) {
-            pos += speed;
-            if (pos >= setWidth) pos -= setWidth;
-            track.style.transform = `translateX(${-pos}px)`;
+        pos += speed * dir;
+        normalize();
+        track.style.transform = `translateX(${-pos}px)`;
         }
-        raf = requestAnimationFrame(loop);
+        raf = requestAnimationFrame(tick);
     }
-    raf = requestAnimationFrame(loop);
+    raf = requestAnimationFrame(tick);
 
-    // pointer drag (desktop + touch)
+    // Allow vertical scroll on touch; we handle horizontal ourselves
     slider.style.touchAction = 'pan-y';
+
+    // ----- Pointer drag (mouse + touch) -----
     slider.addEventListener('pointerdown', (e) => {
         dragging = true;
         moved = 0;
         startX = e.clientX;
         startPos = pos;
-        slider.classList.add('is-dragging');      // <<< update cursor
+        slider.classList.add('is-dragging');  // cursor -> grabbing
         slider.setPointerCapture(e.pointerId);
     });
 
     slider.addEventListener('pointermove', (e) => {
         if (!dragging) return;
-        const dx = e.clientX - startX;
+        const dx = e.clientX - startX;    // >0 dragging right, <0 left
         moved = Math.max(moved, Math.abs(dx));
-        pos = (startPos - dx) % setWidth;
-        if (pos < 0) pos += setWidth;
+        pos = startPos - dx;              // follow finger/mouse
+        normalize();
         track.style.transform = `translateX(${-pos}px)`;
+
+        // Immediately reflect user intent in autoplay direction
+        if (Math.abs(dx) > 2) dir = dx < 0 ? +1 : -1; // left swipe => move left, etc.
     });
 
-    const endDrag = (e) => {
+    function endDrag(e){
         if (!dragging) return;
         dragging = false;
-        slider.classList.remove('is-dragging');   // <<< restore cursor
+        slider.classList.remove('is-dragging'); // cursor back to grab
         try { slider.releasePointerCapture(e.pointerId); } catch {}
-    };
+    }
     slider.addEventListener('pointerup', endDrag);
     slider.addEventListener('pointercancel', endDrag);
     slider.addEventListener('mouseleave', endDrag);
 
-    // pause autoplay on hover (desktop)
-    slider.addEventListener('mouseenter', () => { hoverPause = true; });
-    slider.addEventListener('mouseleave', () => { hoverPause = false; });
-
-    // wheel -> horizontal scroll (desktop mice/trackpads)
-    slider.addEventListener('wheel', (e) => {
-        // Convert vertical wheel to horizontal slide when hovering the slider
-        if (Math.abs(e.deltaY) > Math.abs(e.deltaX)) {
-        e.preventDefault(); // only when we’re actively using it for horizontal scroll
-            pos = (pos + e.deltaY) % setWidth;      // natural feel: wheel down -> move right
-        } else {
-            pos = (pos + e.deltaX) % setWidth;
-        }
-        if (pos < 0) pos += setWidth;
-        track.style.transform = `translateX(${-pos}px)`;
-    }, { passive: false });
-
-    // click guard (don’t open links if it was a drag)
+    // Prevent accidental link opens when it was a drag
     track.addEventListener('click', (e) => {
         if (moved > 6) { e.preventDefault(); e.stopPropagation(); }
         moved = 0;
     }, true);
+
+    // ----- Hover pause (desktop only) -----
+    slider.addEventListener('mouseenter', () => { hoverPause = true; });
+    slider.addEventListener('mouseleave', () => { hoverPause = false; });
+
+    // ----- Wheel / trackpad: scroll horizontally & set direction -----
+    slider.addEventListener('wheel', (e) => {
+        // Use dominant axis so vertical wheels still slide horizontally
+        const d = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+
+        // We take control when hovered so prevent page scroll
+        e.preventDefault();
+
+        pos += d;                // wheel down/right => move left (natural feel)
+        normalize();
+        track.style.transform = `translateX(${-pos}px)`;
+
+        // Reverse autoplay to match the scroll direction
+        dir = d > 0 ? +1 : -1;
+    }, { passive: false });
     })();
+    
     document.querySelectorAll('.slide-title').forEach(el => {
         if (!el.hasAttribute('title')) el.setAttribute('title', el.textContent.trim());
     });
