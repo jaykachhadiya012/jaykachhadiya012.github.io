@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             exp_heading: "Professional Experience",
             exp_subtitle: "Where I've applied my skills to solve real-world problems.",
-            exp1_title: "Business Intelligence Analyst",
+            exp1_title: "Business Intelligence Analyst Intern",
             exp1_type: "Internship",
             exp1_location: "Surat, Gujarat, India",
             exp1_bullet1: "Built & maintained interactive Power BI dashboards tracking KPIs for real-time insights.",
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
             exp1_bullet3: "Collaborated cross-functionally to capture requirements and ship analytical solutions.",
             exp1_bullet4: "Automated ETL steps to reduce manual effort and improve report consistency.",
             skills_dm: "Data Modeling",
-            exp2_title: "Data Analyst",
+            exp2_title: "Data Analyst Intern",
             exp2_type: "Internship",
             exp2_location: "Junagadh, Gujarat, India",
             exp2_bullet1: "Cleaned & transformed large datasets with Python and SQL to produce reliable, analysis-ready data.",
@@ -176,7 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             exp_heading: "Berufserfahrung",
             exp_subtitle: "Wo ich meine Fähigkeiten in der Praxis eingesetzt habe.",
-            exp1_title: "Business Intelligence Analyst",
+            exp1_title: "Praktikant im Bereich Business Intelligence",
             exp1_type: "Praktikum",
             exp1_location: "Surat, Gujarat, Indien",
             exp1_bullet1: "Erstellung und Pflege interaktiver Power BI-Dashboards zur Verfolgung von KPIs für Echtzeit-Einblicke.",
@@ -184,7 +184,7 @@ document.addEventListener('DOMContentLoaded', () => {
             exp1_bullet3: "Zusammenarbeit mit verschiedenen Abteilungen zur Erfassung von Anforderungen und Bereitstellung analytischer Lösungen.",
             exp1_bullet4: "Automatisierung von ETL-Schritten zur Reduzierung manueller Aufwände und Verbesserung der Berichtskonsistenz.",
             skills_dm: "Datenmodellierung",
-            exp2_title: "Datenanalyst",
+            exp2_title: "Praktikant im Bereich Datenanalyse",
             exp2_type: "Praktikum",
             exp2_location: "Junagadh, Gujarat, Indien",
             exp2_bullet1: "Bereinigung und Transformation großer Datensätze mit Python und SQL zur Erstellung zuverlässiger, analysebereiter Daten.",
@@ -680,3 +680,4 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DYNAMIC COPYRIGHT YEAR ---
     document.getElementById('copyright-year').textContent = new Date().getFullYear();
 });
+
