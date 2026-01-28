@@ -45,6 +45,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             exp_heading: "Professional Experience",
             exp_subtitle: "Where I've applied my skills to solve real-world problems.",
+            exp0_title: "Werkstudent Software Engineer",
+            exp0_type: "Part-time",
+            exp0_location: "Koblenz, Germany",
+            exp0_bullet1: "Developed and maintained full-stack features using modern frontend and backend technologies.",
+            exp0_bullet2: "Built and integrated REST APIs and worked with databases to support application logic.",
+            exp0_bullet3: "Collaborated with designers and senior engineers in an agile development environment.",
+            exp0_bullet4: "Wrote clean, reusable code and helped with testing, debugging, and performance improvements.",
             exp1_title: "Business Intelligence Analyst Intern",
             exp1_type: "Internship",
             exp1_location: "Surat, Gujarat, India",
@@ -176,6 +183,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
             exp_heading: "Berufserfahrung",
             exp_subtitle: "Wo ich meine Fähigkeiten in der Praxis eingesetzt habe.",
+            exp0_title: "Werkstudent Softwareentwickler",
+            exp0_type: "Teilzeit",
+            exp0_location: "Koblenz, Deutschland",
+            exp0_bullet1: "Entwicklung und Wartung von Full-Stack-Funktionen unter Verwendung moderner Frontend- und Backend-Technologien.",
+            exp0_bullet2: "Erstellung und Integration von REST-APIs und Arbeit mit Datenbanken zur Unterstützung der Anwendungslogik.",
+            exp0_bullet3: "Zusammenarbeit mit Designern und leitenden Ingenieuren in einer agilen Entwicklungsumgebung.",
+            exp0_bullet4: "Ich habe sauberen, wiederverwendbaren Code geschrieben und bei Tests, Debugging und Leistungsverbesserungen geholfen.",
             exp1_title: "Praktikant im Bereich Business Intelligence",
             exp1_type: "Praktikum",
             exp1_location: "Surat, Gujarat, Indien",
@@ -680,4 +694,5 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DYNAMIC COPYRIGHT YEAR ---
     document.getElementById('copyright-year').textContent = new Date().getFullYear();
 });
+
 
