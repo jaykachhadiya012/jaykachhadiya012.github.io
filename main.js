@@ -48,6 +48,7 @@ document.addEventListener('DOMContentLoaded', () => {
             exp0_title: "Werkstudent Software Engineer",
             exp0_type: "Part-time",
             exp0_location: "Koblenz, Germany",
+            exp0_datetime: "Present",
             exp0_bullet1: "Developed and maintained full-stack features using modern frontend and backend technologies.",
             exp0_bullet2: "Built and integrated REST APIs and worked with databases to support application logic.",
             exp0_bullet3: "Collaborated with designers and senior engineers in an agile development environment.",
@@ -186,6 +187,7 @@ document.addEventListener('DOMContentLoaded', () => {
             exp0_title: "Werkstudent Softwareentwickler",
             exp0_type: "Teilzeit",
             exp0_location: "Koblenz, Deutschland",
+            exp0_datetime: "Gegenwärtig",
             exp0_bullet1: "Entwicklung und Wartung von Full-Stack-Funktionen unter Verwendung moderner Frontend- und Backend-Technologien.",
             exp0_bullet2: "Erstellung und Integration von REST-APIs und Arbeit mit Datenbanken zur Unterstützung der Anwendungslogik.",
             exp0_bullet3: "Zusammenarbeit mit Designern und leitenden Ingenieuren in einer agilen Entwicklungsumgebung.",
@@ -694,5 +696,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // --- DYNAMIC COPYRIGHT YEAR ---
     document.getElementById('copyright-year').textContent = new Date().getFullYear();
 });
+
 
 
